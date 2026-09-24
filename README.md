@@ -113,16 +113,7 @@ python src/capture_board.py --session "lecture_2026_09_24" --image board1.jpg
 
 Both write into `sessions/lecture_2026_09_24.md`, in timestamp order.
 
-> **Note (macOS):** the first run will prompt for microphone permission — grant it to your terminal app in System Settings → Privacy & Security → Microphone.
-
----
-
-## Roadmap
-
-- **Week 1** — Live transcription MVP ✅
-- **Week 2** — Board photo capture + OCR ✅
-- **Week 3** — Topic-segmentation + auto-headings, clean note generation
-- **Week 4** — Auto-export to Notion/Google Docs, interface polish
+> **Note (macOS):** the first run will prompt for microphone permission: grant it to your terminal app in System Settings → Privacy & Security → Microphone.
 
 ---
 
