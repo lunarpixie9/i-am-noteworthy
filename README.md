@@ -1,4 +1,4 @@
-# I.A.M. NoteWorthy 🎙️📝
+# I.A.M. NoteWorthy 
 **Intelligent Audio-Mapper NoteWorthy**
 
 *A self-writing lecture notebook: that listens, watches the board, and hands the user one clean, organized note when class ends.*
