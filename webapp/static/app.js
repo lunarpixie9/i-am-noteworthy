@@ -454,12 +454,17 @@ if (mascotEl) {
   });
 }
 
+let timerStartTime = 0;
+let timerAccumulatedMs = 0;
+
 function startTimer() {
   if (timerInterval) clearInterval(timerInterval);
+  timerStartTime = Date.now();
   timerInterval = setInterval(() => {
-    elapsedSeconds++;
+    const totalMs = timerAccumulatedMs + (Date.now() - timerStartTime);
+    elapsedSeconds = Math.floor(totalMs / 1000);
     if (timerEl) timerEl.textContent = formatTimeHHMMSS(elapsedSeconds);
-  }, 1000);
+  }, 250);
 }
 
 function stopTimer() {
@@ -467,6 +472,18 @@ function stopTimer() {
     clearInterval(timerInterval);
     timerInterval = null;
   }
+  if (timerStartTime > 0) {
+    timerAccumulatedMs += Date.now() - timerStartTime;
+    timerStartTime = 0;
+  }
+}
+
+function resetTimer() {
+  stopTimer();
+  timerStartTime = 0;
+  timerAccumulatedMs = 0;
+  elapsedSeconds = 0;
+  if (timerEl) timerEl.textContent = formatTimeHHMMSS(0);
 }
 
 // Initial START RECORDING button under mascot circle
@@ -474,13 +491,21 @@ if (btnRecord) {
   btnRecord.addEventListener('click', async () => {
     isRecording = true;
     isPaused = false;
-    elapsedSeconds = 0;
-    if (timerEl) timerEl.textContent = formatTimeHHMMSS(elapsedSeconds);
+    resetTimer();
 
     // Switch UI states
     if (idleControls) idleControls.classList.add('hidden');
     if (activeControls) activeControls.classList.remove('hidden');
     if (reviewControls) reviewControls.classList.add('hidden');
+
+    if (btnPause) {
+      btnPause.classList.remove('is-paused');
+      const iconPause = btnPause.querySelector('.icon-pause');
+      const iconResume = btnPause.querySelector('.icon-resume');
+      if (iconPause) iconPause.classList.remove('hidden');
+      if (iconResume) iconResume.classList.add('hidden');
+    }
+    if (btnPauseText) btnPauseText.textContent = 'Pause';
 
     if (timerPulse) timerPulse.classList.add('active');
     if (liveDot) liveDot.classList.add('active');
@@ -544,8 +569,7 @@ if (btnPause) {
 if (btnRestart) {
   btnRestart.addEventListener('click', async () => {
     if (confirm('Restart recording from 00:00:00?')) {
-      elapsedSeconds = 0;
-      if (timerEl) timerEl.textContent = formatTimeHHMMSS(elapsedSeconds);
+      resetTimer();
       isPaused = false;
       if (btnPause) {
         btnPause.classList.remove('is-paused');
