@@ -1,0 +1,35 @@
+# --- Secrets — NEVER commit these ---
+.env
+.env.*
+!.env.example
+*credentials*.json
+*token*.json
+service-account*.json
+
+# --- Python ---
+__pycache__/
+*.py[cod]
+*.egg-info/
+
+# --- Virtual environment ---
+venv/
+.venv/
+env/
+
+# --- Personal lecture data (your own recordings/notes shouldn't be public) ---
+sessions/*.md
+!sessions/.gitkeep
+recordings/*.wav
+!recordings/.gitkeep
+photos/*/
+!photos/.gitkeep
+
+# --- Model cache (faster-whisper downloads models here) ---
+.cache/
+
+# --- macOS ---
+.DS_Store
+
+# --- Editor ---
+.vscode/
+.idea/
