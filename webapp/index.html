@@ -6,8 +6,8 @@
 <title>I.A.M. NoteWorthy — Smart Lecture Companion</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="static/style.css?v=7" />
+<link href="https://fonts.googleapis.com/css2?family=Slackey&family=DynaPuff:wght@600;700;800&family=Londrina+Solid:wght@400;900&family=Chewy&family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="static/style.css?v=29" />
 </head>
 <body>
 
@@ -76,7 +76,11 @@
         <!-- Dynamic Locked Text Container (position stays fixed, only content transitions smoothly) -->
         <div class="welcome-content-card">
           <div class="welcome-text-slot" id="welcome-text-slot">
-            <h1 class="welcome-title" id="welcome-title">Welcome to NoteWorthy</h1>
+            <h1 class="welcome-brand-title" id="welcome-brand-title" aria-label="i AM NOTEWORTHY">
+              <span class="brand-row-1">i AM</span>
+              <span class="brand-row-2">NOTEWORTHY</span>
+            </h1>
+            <div class="welcome-feature-pill" id="welcome-feature-pill">Smart Audio Study Notes</div>
             <p class="welcome-subtitle" id="welcome-subtitle">Turn any lecture into beautifully structured notes, mindmaps, and instant Notion docs in seconds.</p>
           </div>
 
@@ -140,7 +144,7 @@
             </div>
           </div>
 
-          <!-- Centered Subject Selection Button (Under mascot and above Start Recording) -->
+          <!-- Centered Subject Selection Button -->
           <div class="subject-center-slot">
             <button class="subject-pill-btn" id="btn-subject-picker" title="Change subject">
               <span class="subject-dot" id="active-subject-dot" style="background:#DE7B63;"></span>
@@ -150,10 +154,11 @@
           </div>
 
           <!-- CONTROLS CONTAINER (Directly under subject picker) -->
-          <!-- Initial State: Single Start Button -->
+          <!-- Initial State: Single Start Session Button -->
           <div class="controls-slot" id="idle-controls">
-            <button class="primary-pill-btn record-cta-btn" id="btn-record">
-              <span>Start Recording</span>
+            <button class="primary-pill-btn record-cta-btn" id="btn-start-session">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="8"/></svg>
+              <span>Start Session</span>
             </button>
           </div>
 
@@ -188,13 +193,13 @@
             <button class="text-link-btn" id="btn-resume-after-stop">Actually, keep recording</button>
           </div>
 
-          <!-- Add Photo / Slide Button & Gallery -->
-          <div class="attachment-section">
+          <!-- Add Photo / Slide Button & Gallery (Visible ONLY during active session) -->
+          <div class="attachment-section hidden" id="attachment-section">
             <button class="add-slide-btn" id="btn-add">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
               <span>+ Add photo or slide</span>
             </button>
-            <input type="file" id="file-input" accept="image/*,.pdf,.pptx" capture="environment" hidden multiple />
+            <input type="file" id="file-input" accept="image/*,application/pdf,.pdf,.pptx" capture="environment" hidden multiple />
             <div class="uploads-strip hidden" id="uploads-strip"></div>
           </div>
 
@@ -222,22 +227,32 @@
       <!-- ===== SCREEN 4: GENERATED NOTES RESULT SCREEN ===== -->
       <section class="screen" id="screen-notes">
         
+        <!-- Top Left Back Button to return to Session -->
+        <div class="notes-top-bar" id="notes-top-bar">
+          <button class="notes-back-btn" id="btn-notes-back" title="Back to Session & Slides">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+            <span>Back to Session</span>
+          </button>
+        </div>
+
         <!-- Header with Avatar & Details -->
-        <div class="notes-header-card">
+        <div class="notes-header-card" id="notes-header-card">
           <div class="notes-header-left">
             <div class="mascot-sprite state-tailwag mascot-small"></div>
-            <div>
+            <div class="notes-header-text">
               <div class="badge-row">
-                <span class="badge-pill badge-green">Ready</span>
+                <span class="badge-pill badge-green" id="notes-status-badge">Synced Audio</span>
+                <span class="badge-pill" id="notes-lang-badge" style="background:var(--sand-light);color:var(--ink-muted);">Hindi + English</span>
+                <button type="button" class="badge-pill badge-exam-flag hidden" id="notes-exam-alert-badge" title="View Important Exam Topics">Important exam topics</button>
               </div>
-              <h1 class="notes-title" id="notes-lecture-title">Data Engineering</h1>
-              <p class="notes-meta">Wednesday Lecture</p>
+              <h1 class="notes-title" id="notes-lecture-title">Recorded Lecture</h1>
+              <p class="notes-meta" id="notes-lecture-meta">Session Notes</p>
             </div>
           </div>
         </div>
 
         <!-- ACTION TOOLBAR: Save, Export, Export to Notion (3 Buttons) -->
-        <div class="notes-action-toolbar">
+        <div class="notes-action-toolbar" id="notes-action-toolbar">
           <!-- 1. Save (Heart) Button -->
           <button class="icon-tool-btn" id="btn-heart" aria-label="Save this note" title="Save / Favorite note">
             <svg class="heart-icon-svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -255,54 +270,166 @@
           <!-- 3. Export to Notion Button -->
           <button class="notion-pill-btn" id="btn-notion" title="Sync note directly to Notion">
             <svg class="notion-logo-svg" width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path fill-rule="evenodd" clip-rule="evenodd" d="M4.459 4.208c.746.606 1.026.56 2.428.466l13.215-.793c.28 0 .047-.28-.093-.373L18.423 2.3c-.56-.42-1.306-.7-2.333-.607L3.992 2.808c-.466.046-.56.28-.373.466l.84 1.026v-.092zm.98 3.593v13.064c0 .84.42 1.12 1.306 1.026l14.195-.84c.886-.046 1.073-.653 1.073-1.306V6.68c0-.653-.28-.933-.933-.886L5.859 6.755c-.28.046-.42.373-.42 1.046zm12.98.746c.093.42 0 .84-.42.887l-.746.14v9.845c-.466.28-.98.42-1.446.42-.746 0-1.12-.28-1.586-.887l-4.713-7.373v7.373l1.4.28c.093.42 0 .84-.42.887l-3.36.186c-.093-.42 0-.84.42-.887l.84-.187V9.08L9.293 8.94c-.093-.42 0-.84.42-.887l3.547-.233 4.807 7.42V9.08l-.84-.14c-.093-.42 0-.84.42-.887l3.78-.28z" fill="currentColor"/>
+              <path fill-rule="evenodd" clip-rule="evenodd" d="M4.459 4.208c.746.606 1.026.56 2.428.466l13.215-.793c.28 0 .047-.28-.093-.373L18.423 2.3c-.56-.42-1.306-.7-2.333-.607L3.992 2.808c-.466.046-.56.28-.373.466l.84 1.026v-.092zm.98 3.593v13.064c0 .84.42 1.12 1.306 1.026l14.195-.84c.886-.046 1.073-.653 1.073-1.306V6.68c0-.653-.28-.933-.933-.886L5.859 6.755c-.28.046-.42.373-.42 1.046zm12.98.746c.093.42 0 .84-.42.887l-.746.14v9.845c-.466.28-.98.42-1.446.42-.746 0-1.12-.28-1.586-.887l-4.713-7.373v7.373l1.4.28c.093.42 0-.84.42-.887l-3.36.186c-.093-.42 0-.84.42-.887l.84-.187V9.08L9.293 8.94c-.093-.42 0-.84.42-.887l3.547-.233 4.807 7.42V9.08l-.84-.14c-.093-.42 0-.84.42-.887l3.78-.28z" fill="currentColor"/>
             </svg>
             <span>Export to Notion</span>
           </button>
         </div>
 
-        <!-- Audio Snippet Player -->
+        <!-- Audio Snippet Player (WhatsApp / Instagram-Style Thin Waveform UI) -->
         <div class="audio-player-card" id="audio-player-card">
-          <button class="audio-play-toggle" id="btn-audio-play" aria-label="Play recording audio">
+          <button class="audio-play-toggle" id="btn-audio-play" aria-label="Play recording audio" title="Play recording audio">
             <svg class="audio-play-icon" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
             <svg class="audio-pause-icon hidden" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
           </button>
-          <div class="audio-wave-track">
-            <div class="wave-bars">
-              <span style="height: 40%"></span>
+          <div class="audio-wave-track" id="audio-wave-track" title="Lecture Audio Waveform">
+            <div class="wave-bars" id="wave-bars">
+              <span style="height: 25%"></span>
+              <span style="height: 45%"></span>
               <span style="height: 70%"></span>
-              <span style="height: 90%"></span>
               <span style="height: 50%"></span>
+              <span style="height: 90%"></span>
+              <span style="height: 65%"></span>
+              <span style="height: 35%"></span>
               <span style="height: 80%"></span>
               <span style="height: 100%"></span>
-              <span style="height: 60%"></span>
-              <span style="height: 35%"></span>
-              <span style="height: 75%"></span>
               <span style="height: 85%"></span>
+              <span style="height: 40%"></span>
+              <span style="height: 30%"></span>
+              <span style="height: 60%"></span>
+              <span style="height: 95%"></span>
+              <span style="height: 75%"></span>
               <span style="height: 45%"></span>
+              <span style="height: 25%"></span>
+              <span style="height: 55%"></span>
+              <span style="height: 85%"></span>
+              <span style="height: 100%"></span>
+              <span style="height: 70%"></span>
+              <span style="height: 40%"></span>
+              <span style="height: 65%"></span>
+              <span style="height: 90%"></span>
+              <span style="height: 80%"></span>
+              <span style="height: 50%"></span>
+              <span style="height: 30%"></span>
+              <span style="height: 75%"></span>
               <span style="height: 95%"></span>
               <span style="height: 60%"></span>
-              <span style="height: 30%"></span>
+              <span style="height: 35%"></span>
+              <span style="height: 50%"></span>
+              <span style="height: 85%"></span>
+              <span style="height: 100%"></span>
+              <span style="height: 70%"></span>
+              <span style="height: 45%"></span>
+              <span style="height: 25%"></span>
+              <span style="height: 60%"></span>
+              <span style="height: 90%"></span>
+              <span style="height: 80%"></span>
+              <span style="height: 55%"></span>
+              <span style="height: 35%"></span>
+              <span style="height: 70%"></span>
+              <span style="height: 85%"></span>
+              <span style="height: 60%"></span>
+              <span style="height: 40%"></span>
+              <span style="height: 25%"></span>
+              <span style="height: 15%"></span>
             </div>
+          </div>
+
+          <!-- Audio Playback Speed Dropdown (Right side of audio player) -->
+          <div class="audio-speed-control" title="Playback speed">
+            <select class="audio-speed-select" id="audio-speed-select" aria-label="Audio Playback Speed">
+              <option value="0.75">0.75x</option>
+              <option value="1" selected>1x</option>
+              <option value="1.25">1.25x</option>
+              <option value="1.5">1.5x</option>
+              <option value="1.75">1.75x</option>
+              <option value="2">2x</option>
+            </select>
+            <svg class="speed-chevron-icon" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"></polyline></svg>
           </div>
         </div>
 
-        <!-- Key Concepts Section -->
-        <div class="section-header-row">
-          <p class="section-label">Key Concepts</p>
+        <!-- Empty State (Shown when no lecture has been recorded or selected) -->
+        <div class="notes-empty-card hidden" id="notes-empty-state">
+          <div class="empty-icon-wrap">🎙️</div>
+          <h3 class="empty-title">No Lecture Notes Yet</h3>
+          <p class="empty-desc">Record your first class lecture with far-field audio boost, or select a saved session from History.</p>
+          <button class="primary-pill-btn" id="btn-empty-goto-record">Start Recording</button>
         </div>
-        <div class="chip-row" id="chip-row"></div>
 
-        <!-- Executive Summary Section -->
-        <p class="section-label">Executive Summary</p>
-        <div class="card summary-card" id="summary-card"></div>
+        <!-- Main Notes Content Wrapper -->
+        <div class="notes-content-wrap" id="notes-content-wrap">
+          <!-- ===== IMPORTANT EXAM TOPICS CARD ===== -->
+          <div class="exam-alerts-card hidden" id="exam-alerts-section">
+            <div class="exam-alerts-banner-head">
+              <div class="exam-alerts-title-left">
+                <h3 class="exam-alerts-title">Important exam topics</h3>
+                <p class="exam-alerts-desc">Key concepts and questions emphasized by the professor for tests and finals</p>
+              </div>
+            </div>
+            <div class="exam-alerts-grid" id="exam-alerts-list"></div>
+          </div>
 
-        <!-- Chronological Timeline Section -->
-        <div class="section-header-row">
-          <p class="section-label">Full Timeline &amp; Visuals</p>
-          <span class="section-tag">Speech &amp; Slides</span>
+          <!-- Key Concepts Section -->
+          <div class="section-header-row">
+            <p class="section-label">Key Concepts</p>
+          </div>
+          <div class="chip-row" id="chip-row"></div>
+          <div class="concept-breakdown-wrap" id="concept-breakdown-wrap" style="margin-top:10px;"></div>
+
+          <!-- Mind Maps Section (Visual hierarchy for Levels, Architecture, Characteristics, Examples) -->
+          <div class="mindmaps-section hidden" id="mindmaps-section">
+            <div class="section-header-row">
+              <p class="section-label">Visual Mind Maps</p>
+              <span class="section-tag" id="mindmaps-count-tag">Concept Structures</span>
+            </div>
+            <div class="mindmaps-grid" id="mindmaps-grid"></div>
+          </div>
+
+          <!-- Executive Summary Section -->
+          <p class="section-label">Executive Summary</p>
+          <div class="card summary-card" id="summary-card"></div>
+
+          <!-- ===== FEATURE 2: HINGLISH / CODE-SWITCHING SMART GLOSSARY ===== -->
+          <div class="smart-glossary-card hidden" id="smart-glossary-section">
+            <div class="glossary-header-banner">
+              <div class="glossary-title-left">
+                <span class="glossary-badge-icon">📖</span>
+                <div>
+                  <h3 class="glossary-title">Hinglish / Code-Switching Smart Glossary</h3>
+                  <p class="glossary-desc">Direct side-by-side mapping from informal classroom explanations to standard textbook terms</p>
+                </div>
+              </div>
+              <div class="glossary-lang-pill">Hindi &middot; Hinglish &middot; English</div>
+            </div>
+
+            <!-- Search / Filter Bar -->
+            <div class="glossary-toolbar">
+              <div class="glossary-search-box">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                <input type="text" id="glossary-search-input" placeholder="Search Hinglish or textbook terms..." />
+              </div>
+              <span class="glossary-terms-pill" id="glossary-terms-pill">0 Terms</span>
+            </div>
+
+            <!-- Side-by-Side Glossary Grid -->
+            <div class="glossary-items-grid" id="glossary-grid"></div>
+          </div>
+
+          <!-- Chronological Timeline Section -->
+          <div class="section-header-row">
+            <p class="section-label">Full Timeline &amp; Visuals</p>
+            <span class="section-tag">Speech &amp; Slides</span>
+          </div>
+          <div class="timeline" id="timeline"></div>
+
+          <!-- Original Spoken Transcript Section -->
+          <div class="section-header-row transcript-header-row" style="margin-top:20px;">
+            <p class="section-label">Original Spoken Transcript</p>
+            <span class="section-tag">Verbatim Audio</span>
+          </div>
+          <div class="card summary-card" id="raw-transcript-card" style="font-size:0.86rem;line-height:1.6;color:var(--ink-body);white-space:pre-wrap;background:#FFFBF7;border:1px solid rgba(222,123,99,0.15);padding:14px 16px;border-radius:14px;"></div>
         </div>
-        <div class="timeline" id="timeline"></div>
 
         <!-- Footer Actions -->
         <div class="notes-footer-actions">
@@ -319,7 +446,7 @@
         <div class="history-header">
           <div class="history-header-row">
             <div class="history-titles">
-              <h1>Past Sessions</h1>
+              <h1>History</h1>
             </div>
             <!-- Delete Bin Button (Shown when 1+ notes selected) -->
             <button class="btn-delete-bin hidden" id="btn-delete-selected" title="Delete selected notes" aria-label="Delete selected notes">
@@ -338,10 +465,10 @@
         <div class="history-filter-tabs">
           <button class="filter-tab active" data-filter="all">All</button>
           <button class="filter-tab" data-filter="favorites">
-            <span>Saved</span>
-            <svg class="tab-heart-svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+            <svg class="tab-heart-svg" width="14" height="14" viewBox="0 0 24 24" fill="var(--coral)" stroke="var(--coral)">
+              <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" fill="var(--coral)" stroke="var(--coral)"/>
             </svg>
+            <span>Saved</span>
           </button>
           <button class="filter-tab" data-filter="trash" id="tab-trash">
             <span>Bin</span>
@@ -371,8 +498,13 @@
           <button class="danger-pill-btn" id="btn-confirm-delete">Delete</button>
           <button class="secondary-pill-btn" id="btn-cancel-delete">Go back</button>
         </div>
+        <label class="delete-perm-checkbox-label" for="chk-delete-permanently">
+          <input type="checkbox" id="chk-delete-permanently" />
+          <span>Delete permanently?</span>
+        </label>
       </div>
     </div>
+
 
     <!-- ===== BOTTOM NAV BAR ===== -->
     <nav class="bottom-nav">
@@ -468,44 +600,146 @@
           <h3>Export Lecture Notes</h3>
           <button class="modal-close-btn" id="btn-close-export">&times;</button>
         </div>
-        <p class="modal-desc">Choose a format to export or copy your synchronized notes:</p>
+        <p class="modal-desc">Choose a format to export, print, or sync your synchronized notes:</p>
         <div class="export-options">
-          <button class="export-option-card" data-format="markdown">
-            <div class="opt-icon">📝</div>
-            <div class="opt-info">
-              <strong>Markdown (.md)</strong>
-              <span>With headers, timestamps &amp; slide tags</span>
-            </div>
-          </button>
-          <button class="export-option-card" data-format="pdf">
+          <button class="export-option-card" data-format="pdf" id="opt-export-pdf">
             <div class="opt-icon">📑</div>
             <div class="opt-info">
-              <strong>PDF Summary</strong>
-              <span>Clean formatted document for study guides</span>
+              <strong>Export to PDF (Study Guide)</strong>
+              <span>Clean 2-column textbook layout with mint tags, lime highlights &amp; diagrams</span>
             </div>
+            <div class="opt-badge-pill">A4 PDF</div>
           </button>
-          <button class="export-option-card" data-format="clipboard">
-            <div class="opt-icon">📋</div>
-            <div class="opt-info">
-              <strong>Copy to Clipboard</strong>
-              <span>Formatted text ready to paste anywhere</span>
+          <button class="export-option-card" data-format="notion" id="opt-export-notion">
+            <div class="opt-icon">
+              <svg class="notion-logo-svg" width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path fill-rule="evenodd" clip-rule="evenodd" d="M4.459 4.208c.746.606 1.026.56 2.428.466l13.215-.793c.28 0 .047-.28-.093-.373L18.423 2.3c-.56-.42-1.306-.7-2.333-.607L3.992 2.808c-.466.046-.56.28-.373.466l.84 1.026v-.092zm.98 3.593v13.064c0 .84.42 1.12 1.306 1.026l14.195-.84c.886-.046 1.073-.653 1.073-1.306V6.68c0-.653-.28-.933-.933-.886L5.859 6.755c-.28.046-.42.373-.42 1.046zm12.98.746c.093.42 0 .84-.42.887l-.746.14v9.845c-.466.28-.98.42-1.446.42-.746 0-1.12-.28-1.586-.887l-4.713-7.373v7.373l1.4.28c.093.42 0 .84-.42.887l-3.36.186c-.093-.42 0-.84.42-.887l.84-.187V9.08L9.293 8.94c-.093-.42 0-.84.42-.887l3.547-.233 4.807 7.42V9.08l-.84-.14c-.093-.42 0-.84.42-.887l3.78-.28z" fill="currentColor"/>
+              </svg>
             </div>
+            <div class="opt-info">
+              <strong>Export to Notion Workspace</strong>
+              <span>Live sync with blocks, high-yield exam alerts &amp; checklists</span>
+            </div>
+            <div class="opt-badge-pill opt-badge-sync">Notion API</div>
           </button>
         </div>
       </div>
     </div>
 
-    <!-- ===== NOTION SYNC MODAL / TOAST ===== -->
-    <div class="toast-notification hidden" id="app-toast">
-      <div class="toast-content">
-        <span class="toast-icon" id="toast-icon">✨</span>
-        <span class="toast-message" id="toast-message">Exported successfully!</span>
+    <!-- ===== NOTION INTEGRATION MODAL ===== -->
+    <div class="modal-backdrop hidden" id="notion-modal">
+      <div class="modal-sheet notion-modal-sheet">
+        <div class="modal-drag-pill"></div>
+        <div class="modal-header">
+          <div class="notion-modal-title-group">
+            <svg class="notion-logo-svg" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path fill-rule="evenodd" clip-rule="evenodd" d="M4.459 4.208c.746.606 1.026.56 2.428.466l13.215-.793c.28 0 .047-.28-.093-.373L18.423 2.3c-.56-.42-1.306-.7-2.333-.607L3.992 2.808c-.466.046-.56.28-.373.466l.84 1.026v-.092zm.98 3.593v13.064c0 .84.42 1.12 1.306 1.026l14.195-.84c.886-.046 1.073-.653 1.073-1.306V6.68c0-.653-.28-.933-.933-.886L5.859 6.755c-.28.046-.42.373-.42 1.046zm12.98.746c.093.42 0 .84-.42.887l-.746.14v9.845c-.466.28-.98.42-1.446.42-.746 0-1.12-.28-1.586-.887l-4.713-7.373v7.373l1.4.28c.093.42 0 .84-.42.887l-3.36.186c-.093-.42 0-.84.42-.887l.84-.187V9.08L9.293 8.94c-.093-.42 0-.84.42-.887l3.547-.233 4.807 7.42V9.08l-.84-.14c-.093-.42 0-.84.42-.887l3.78-.28z" fill="currentColor"/>
+            </svg>
+            <h3>Sync to Notion Workspace</h3>
+          </div>
+          <button class="modal-close-btn" id="btn-close-notion">&times;</button>
+        </div>
+        <p class="modal-desc">Create a live Notion page with formatted headers, callouts, and checklists directly in your workspace:</p>
+
+        <div class="notion-form-body">
+          <div class="form-group">
+            <label for="notion-token-input">Notion Internal Integration Token <span class="req-star">*</span></label>
+            <div class="input-with-icon">
+              <input type="password" id="notion-token-input" placeholder="secret_..." autocomplete="off" />
+              <button type="button" class="btn-toggle-token-eye" id="btn-toggle-notion-token" title="Show/Hide Token">👁️</button>
+            </div>
+            <small class="form-help">
+              Don't have one? Get a free internal token at <a href="https://www.notion.so/my-integrations" target="_blank" rel="noopener">notion.so/my-integrations</a>.
+            </small>
+          </div>
+
+          <div class="form-group">
+            <label for="notion-parent-input">Parent Page or Database URL / ID <span class="opt-label">(Optional)</span></label>
+            <input type="text" id="notion-parent-input" placeholder="Paste Notion page URL or 32-char UUID" />
+            <small class="form-help">
+              💡 <b>Tip:</b> Open your Notion page, click <code>...</code> on top right ➔ <b>Connect to</b> ➔ select your integration name. If left blank, we will automatically locate your shared integration page!
+            </small>
+          </div>
+
+          <div class="form-checkbox-row">
+            <input type="checkbox" id="chk-save-notion" checked />
+            <label for="chk-save-notion">Remember token securely in browser for 1-click sync</label>
+          </div>
+
+          <div class="notion-action-row">
+            <button class="primary-pill-btn btn-notion-submit" id="btn-submit-notion">
+              <span class="btn-notion-txt">🚀 Push to Notion</span>
+            </button>
+            <button class="secondary-pill-btn btn-notion-md-copy" id="btn-copy-notion-md">
+              📋 Copy Notion Markdown
+            </button>
+          </div>
+
+          <!-- Dynamic Status Notification in Modal -->
+          <div class="notion-result-card hidden" id="notion-result-box">
+            <div class="notion-result-icon" id="notion-result-icon">✓</div>
+            <div class="notion-result-info">
+              <div class="notion-result-msg" id="notion-result-msg">Notes exported to Notion!</div>
+              <a href="#" target="_blank" rel="noopener" class="notion-result-link hidden" id="notion-result-link">Open in Notion ↗</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== INTERACTIVE 2-COLUMN STUDY GUIDE PREVIEW MODAL ===== -->
+    <div class="modal-backdrop hidden" id="study-guide-modal">
+      <div class="study-guide-modal-sheet">
+        <div class="study-guide-toolbar">
+          <div class="sg-toolbar-left">
+            <span class="sg-badge">Study Guide View</span>
+            <span class="sg-subtitle">Inspired by Textbook &amp; GoodNotes Aesthetic</span>
+          </div>
+          <div class="sg-toolbar-actions">
+            <button class="primary-pill-btn sg-action-btn" id="btn-sg-download-pdf">
+              📥 Download PDF
+            </button>
+            <button class="secondary-pill-btn sg-action-btn" id="btn-sg-print">
+              🖨️ Print / Save
+            </button>
+            <button class="modal-close-btn" id="btn-close-sg">&times;</button>
+          </div>
+        </div>
+
+        <div class="study-guide-viewport">
+          <div class="study-guide-a4-page" id="study-guide-content">
+            <!-- Dynamic 2-column study guide content rendered here via JS -->
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== iOS-STYLE GLASSMORPHIC APP NOTIFICATION BANNER ===== -->
+    <div class="ios-notification-banner hidden" id="app-toast" role="alert">
+      <div class="notif-card-glass">
+        <!-- Left: Static Character Avatar inside Circle -->
+        <div class="notif-avatar-circle" title="NoteWorthy Companion">
+          <div class="notif-cat-avatar"></div>
+        </div>
+        
+        <!-- Right: iOS Notification Content -->
+        <div class="notif-content-col">
+          <div class="notif-header-row">
+            <span class="notif-app-brand">NoteWorthy</span>
+            <span class="notif-timestamp" id="notif-timestamp">now</span>
+          </div>
+          <div class="notif-title-row" id="notif-title-row">
+            <span class="notif-title" id="notif-title">Notice</span>
+            <span class="toast-icon hidden" id="toast-icon">✨</span>
+          </div>
+          <div class="notif-message-text" id="toast-message">Exported successfully!</div>
+        </div>
       </div>
     </div>
 
   </div>
 </div>
 
-<script src="static/app.js?v=7"></script>
+<script src="static/app.js?v=29"></script>
 </body>
 </html>

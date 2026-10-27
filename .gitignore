@@ -17,12 +17,19 @@ venv/
 env/
 
 # --- Personal lecture data (your own recordings/notes shouldn't be public) ---
-sessions/*.md
+sessions/
 !sessions/.gitkeep
-recordings/*.wav
+recordings/
 !recordings/.gitkeep
-photos/*/
+photos/
 !photos/.gitkeep
+
+# --- Test / generated PDFs ---
+test_*.pdf
+
+# --- Backups ---
+webapp_backup/
+server_full_backup.py
 
 # --- Model cache (faster-whisper downloads models here) ---
 .cache/
